@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { CiSearch } from "react-icons/ci";
 import { FiUser } from "react-icons/fi";
+import { useState } from "react";
+import LoginModal from "./LoginModal";
 
 
 
@@ -42,15 +44,17 @@ const StyledHeader = styled.header`
     }
 
     .login {
-    width: 68px;
-    height: 24px;
+    width: 100px;
+    height: 40px;
     border-radius: 10px;
     padding: 8px 16px;
     background-color: #155dfc;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
     color: white;
+    box-sizing: border-box;
+    border: none;
     }
 
     .login-icon {
@@ -62,6 +66,9 @@ const StyledHeader = styled.header`
 
 
 function Header() {
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
+
+
     return(
         <StyledHeader>
             <div className="logo">Anime Tracker</div>
@@ -69,9 +76,12 @@ function Header() {
                 <input className="search" placeholder="Search anime..."></input>
                 <CiSearch className="search-icon"/>
                 </div>
-                <div className="login">
-                    <FiUser className="login-icon"/>
-                    Login
+                <div className="login-container">
+                    <button className="login" onClick={() => setIsLoginOpen(true)}>
+                        <FiUser className="login-icon"/>
+                        Login
+                    </button>
+                    <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)}/>
                 </div>
         </StyledHeader>
     );
