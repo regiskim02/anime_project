@@ -8,9 +8,52 @@ const Modal = styled.div`
     border-radius: 12px;
     padding: 24px;
     position: relative;
+    display: flex;
+    flex-direction: column;
 
     .login-title {
     font-size: 20px;
+    }
+
+    input {
+    widht: 400px;
+    height: 42px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.21);
+    box-sizing: border-box;
+    font-size: 16px;
+    }
+
+    .login-button{
+    heihgt: 60px;
+    padding: 8px;
+    font-size: 16px;
+    color: white;
+    background-color: #155dfc;
+    margin-top: 18px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: none;
+    }
+
+    .button-link {
+    margin-top: 18px;
+    background: none; /* Remove background color */
+    border: none; /* Remove border */
+    padding: 0; /* Remove padding */
+    color: #155dfc;; /* Set typical link color (blue) */
+    text-decoration: underline; /* Add underline like a link */
+    cursor: pointer; /* Change cursor to a hand icon on hover */
+    font-family: inherit; /* Inherit font from parent */
+    font-size: 16px;
+    text-decoration: none;
+    }
+
+    .button-link:hover,
+    .button-link:focus {
+    color: #0d58f9ff;
+    text-decoration: underline;
     
     }
 `;
@@ -42,11 +85,13 @@ function LoginModal({isOpen, onClose}) {
                     <FiX size={20}/>
                 </CloseButton>
                 <h2 className="login-title">Login</h2>
-
+                <h3>Username</h3>
                 <input placeholder="Enter username"></input>
+                <h3>Password</h3>
                 <input type="password" placeholder="Enter password"/>
 
-                <buttom>Login</buttom>
+                <button className="login-button">Login</button>
+                <button className="button-link">Don't have an account? Register</button>
             </Modal>
         </Backdrop>
     );
