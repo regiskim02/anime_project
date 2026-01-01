@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { FiX } from "react-icons/fi";
 import styled from "styled-components";
 
@@ -76,6 +77,8 @@ const Backdrop = styled.div`
 `;
 
 function LoginModal({isOpen, onClose}) {
+    const [mode, setMode] = useState("login");
+
     if (!isOpen) return null;
 
     return (
@@ -84,14 +87,30 @@ function LoginModal({isOpen, onClose}) {
                 <CloseButton onClick={onClose}>
                     <FiX size={20}/>
                 </CloseButton>
-                <h2 className="login-title">Login</h2>
-                <h3>Username</h3>
-                <input placeholder="Enter username"></input>
-                <h3>Password</h3>
-                <input type="password" placeholder="Enter password"/>
+                <h2 className="login-title">
+                    {mode === "login" ? "Login" : "Register"}
+                </h2>
+                {mode === "login" ? (
+                    <>
+                        <h3>Username</h3>
+                        <input placeholder="Enter username"></input>
+                        <h3>Password</h3>
+                        <input type="password" placeholder="Enter password"/>
 
-                <button className="login-button">Login</button>
-                <button className="button-link">Don't have an account? Register</button>
+                        <button className="login-button">Login</button>
+                        <button className="button-link" onClick={() => setMode("register")}>Don't have an account? Register</button>
+                    </>
+                ) : (
+                    <>
+                        <h3>Username</h3>
+                        <input placeholder="Enter username"></input>
+                        <h3>Password</h3>
+                        <input type="password" placeholder="Enter password"/>
+
+                        <button className="login-button">Register</button>
+                        <button className="button-link" onClick={() => setMode("login")}>Already have an account? Login</button>
+                    </>
+                )}
             </Modal>
         </Backdrop>
     );

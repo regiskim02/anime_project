@@ -4,9 +4,6 @@ import { FiUser } from "react-icons/fi";
 import { useState } from "react";
 import LoginModal from "./LoginModal";
 
-
-
-
 const StyledHeader = styled.header`
     background-color: white;
     width: 100%;
@@ -18,6 +15,11 @@ const StyledHeader = styled.header`
     justify-content: space-between;
     padding: 16px;
     box-sizing: border-box;
+
+    .logo {
+    font-size: 20px;
+    font-weight: bold;
+    }
 
     .search {
         width: 510px;
