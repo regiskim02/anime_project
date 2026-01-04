@@ -5,4 +5,60 @@ main {
 .title {
     font-size: 20px;
     font-weight: bold;
+    margin-bottom: 24px;
+}
+
+.anime {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 1024px) {
+    .anime {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+
+@media (max-width: 768px) {
+    .anime {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .anime {
+        grid-template-columns: 1fr;
+    }
+}
+
+.anime-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    min-width: 280px;
+    margin: 0 auto;
+}
+.anime-card:hover {
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+    transform: translateY(-4px);
+}
+
+.anime-card img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+}
+
+.anime-info {
+    padding: 10px;
+}
+
+.anime-title {
+    font-size: 14px;
+    font-weight: bold;
 }
