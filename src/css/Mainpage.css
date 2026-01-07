@@ -1,5 +1,8 @@
 main {
-    padding: 24px 16px;
+    margin: 0 auto 0 auto;
+    padding: 0px 20px 0 20px;
+    box-sizing: border-box;
+    width: 1160px;
 }
 
 .title {
