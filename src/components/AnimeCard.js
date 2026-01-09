@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { BiSolidStar } from "react-icons/bi";
+import { CiHeart } from "react-icons/ci";
 
 
 
@@ -23,10 +24,41 @@ const AnimeScore = styled.div`
     bottom: 85px;
 
 `
+const FavoriteButton = styled.button`
+    width: 36px;
+    height: 36px;
+    border-radius: 99px;
+    background-color: white;
+    position: absolute;
+    opacity: 0.9;
+    top: 6px;
+    right: 6px;
+    font-size: 24px;
+    border: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+
+    &:hover {
+        transform: scale(1.1) rotate(8deg);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+        opacity: 1;
+    }
+
+
+`
 
 function AnimeCard({ anime }) {
     return (
         <div className="anime-card">
+        <FavoriteButton><CiHeart /></FavoriteButton>
         <img src={anime.images.jpg.image_url} alt={anime.title} />
         <AnimeScore><BiSolidStar /> {anime.score ?? "N/A"}</AnimeScore>
         <div className="anime-info">
