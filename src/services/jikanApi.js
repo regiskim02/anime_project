@@ -1,5 +1,5 @@
 export async function getPopularAnime() {
-    const response = await fetch("https://api.jikan.moe/v4/top/anime?limit=12");
+    const response = await fetch("https://api.jikan.moe/v4/top/anime?limit=24");
     const data = await response.json();
     return data.data || [];
 }

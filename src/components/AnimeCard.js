@@ -21,7 +21,8 @@ const AnimeScore = styled.div`
     align-items: center;
     position: absolute;
     left: 6px;
-    bottom: 85px;
+    bottom: 100%;
+    margin-bottom: 12px;
 
 `
 const FavoriteButton = styled.button`
@@ -56,13 +57,24 @@ const FavoriteButton = styled.button`
 `
 
 function AnimeCard({ anime }) {
+    const infoItems = [anime.type,
+        anime.episodes ? `${anime.episodes} eps` : null,
+        anime.year,].filter(Boolean);
     return (
         <div className="anime-card">
         <FavoriteButton><CiHeart /></FavoriteButton>
         <img src={anime.images.jpg.image_url} alt={anime.title} />
-        <AnimeScore><BiSolidStar /> {anime.score ?? "N/A"}</AnimeScore>
         <div className="anime-info">
+            <AnimeScore><BiSolidStar /> {anime.score ?? "N/A"}</AnimeScore>
             <h3 className="anime-title">{anime.title}</h3>
+            <div className="anime-info-plus">
+                {infoItems.map((item, index) => (
+                    <span key={index}>
+                        {item}
+                        {index < infoItems.length - 1 && " • "}
+                    </span>
+                ))}
+            </div>
         </div>
         </div>
     );

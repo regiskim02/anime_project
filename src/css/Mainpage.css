@@ -60,9 +60,19 @@ main {
 
 .anime-info {
     padding: 10px;
+    position: relative;
 }
 
 .anime-title {
-    font-size: 16px;
+    font-size: 18px;
     margin-top: 0;
+}
+
+.anime-info-plus {
+    color: #4a5565;
+    font-size: 14px;
+    gap: 8px;
+    display: flex;
+    align-items: center;
+
 }
