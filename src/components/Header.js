@@ -19,6 +19,7 @@ const StyledHeader = styled.header`
     .logo {
     font-size: 20px;
     font-weight: bold;
+    cursor: pointer;
     }
 
     .search {
@@ -67,15 +68,19 @@ const StyledHeader = styled.header`
 
 
 
-function Header() {
+function Header({onSearch, onReset}) {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
-
+    const handleKeyDown = async (e) => {
+    if (e.key === "Enter") {
+        onSearch(e.target.value);
+    }
+};
 
     return(
         <StyledHeader>
-            <div className="logo">Anime Tracker</div>
+            <div className="logo" onClick={onReset} >Anime Tracker</div>
                 <div className="search-container">
-                <input className="search" placeholder="Search anime..."></input>
+                <input className="search" placeholder="Search anime..." type="text" onKeyDown={handleKeyDown} id="searchInput"></input>
                 <CiSearch className="search-icon"/>
                 </div>
                 <div className="login-container">

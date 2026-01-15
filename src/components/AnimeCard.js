@@ -56,26 +56,32 @@ const FavoriteButton = styled.button`
 
 `
 
-function AnimeCard({ anime }) {
-    const infoItems = [anime.type,
+function AnimeCard({ anime, onClick }) {
+    const infoItems = [
+        anime.type,
         anime.episodes ? `${anime.episodes} eps` : null,
-        anime.year,].filter(Boolean);
+        anime.year,
+    ].filter(Boolean);
     return (
-        <div className="anime-card">
-        <FavoriteButton><CiHeart /></FavoriteButton>
-        <img src={anime.images.jpg.image_url} alt={anime.title} />
-        <div className="anime-info">
-            <AnimeScore><BiSolidStar /> {anime.score ?? "N/A"}</AnimeScore>
-            <h3 className="anime-title">{anime.title}</h3>
-            <div className="anime-info-plus">
-                {infoItems.map((item, index) => (
-                    <span key={index}>
-                        {item}
-                        {index < infoItems.length - 1 && " • "}
-                    </span>
-                ))}
+        <div className="anime-card" onClick={onClick}>
+            <FavoriteButton onClick={(e) => e.stopPropagation()}>
+                <CiHeart />
+            </FavoriteButton>
+            <img src={anime.images.jpg.large_image_url} alt={anime.title} />
+            <div className="anime-info">
+                <AnimeScore>
+                    <BiSolidStar /> {anime.score ?? "N/A"}
+                </AnimeScore>
+                <h3 className="anime-title">{anime.title}</h3>
+                <div className="anime-info-plus">
+                    {infoItems.map((item, index) => (
+                        <span key={index}>
+                            {item}
+                            {index < infoItems.length - 1 && " • "}
+                        </span>
+                    ))}
+                </div>
             </div>
-        </div>
         </div>
     );
 }
