@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { FiX } from "react-icons/fi";
 import styled from "styled-components";
+import { login, signup } from "../services/authService";
+
 
 const Modal = styled.div`
     background: #fff;
@@ -79,6 +81,31 @@ const Backdrop = styled.div`
 function LoginModal({isOpen, onClose}) {
     const [mode, setMode] = useState("login");
 
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async () => {
+        setError("");
+        setLoading(true);
+
+        try {
+            if (mode === "login") {
+                const res = await login({username, password});
+                localStorage.setItem("token", res.data);
+                onClose();
+            } else {
+                await signup({username, password});
+                setMode("login");
+            }
+        } catch (err) {
+            setError(err.response?.data || "Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    }
+
     if (!isOpen) return null;
 
     return (
@@ -90,24 +117,55 @@ function LoginModal({isOpen, onClose}) {
                 <h2 className="login-title">
                     {mode === "login" ? "Login" : "Register"}
                 </h2>
+                {error && <p style={{ color: "red" }}>{error}</p>}
                 {mode === "login" ? (
                     <>
                         <h3>Username</h3>
-                        <input placeholder="Enter username"></input>
+                        <input 
+                            placeholder="Enter username" 
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}>
+                        </input>
                         <h3>Password</h3>
-                        <input type="password" placeholder="Enter password"/>
+                        <input 
+                            type="password" 
+                            placeholder="Enter password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
 
-                        <button className="login-button">Login</button>
+                        <button 
+                            className="login-button"
+                            onClick={handleSubmit}
+                            disabled={loading}
+                        >
+                            {loading ? "Loading..." : mode === "login" ? "Login" : "Register"}
+                        </button>
                         <button className="button-link" onClick={() => setMode("register")}>Don't have an account? Register</button>
                     </>
                 ) : (
                     <>
                         <h3>Username</h3>
-                        <input placeholder="Enter username"></input>
+                        <input 
+                            placeholder="Enter username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}>
+                        </input>
                         <h3>Password</h3>
-                        <input type="password" placeholder="Enter password"/>
+                        <input 
+                            type="password" 
+                            placeholder="Enter password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
 
-                        <button className="login-button">Register</button>
+                        <button 
+                            className="login-button"
+                            onClick={handleSubmit}
+                            disabled={loading}
+                        >
+                            {loading ? "Loading..." : mode === "login" ? "Login" : "Register"}
+                        </button>
                         <button className="button-link" onClick={() => setMode("login")}>Already have an account? Login</button>
                     </>
                 )}
