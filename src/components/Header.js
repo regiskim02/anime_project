@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { CiSearch } from "react-icons/ci";
 import { FiUser } from "react-icons/fi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginModal from "./LoginModal";
+import { isLoggedIn, logout } from "../services/authService";
 
 const StyledHeader = styled.header`
     background-color: white;
@@ -64,17 +65,38 @@ const StyledHeader = styled.header`
     font-size: 20px;
     }
 
+    .logout {
+    width: 100px;
+    height: 40px;
+    border-radius: 10px;
+    padding: 8px 16px;
+    background-color: #155dfc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: white;
+    box-sizing: border-box;
+    border: none;
+    font-size: 13px;
+    }
+
 `
 
 
 
 function Header({onSearch, onReset}) {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
     const handleKeyDown = async (e) => {
     if (e.key === "Enter") {
         onSearch(e.target.value);
     }
 };
+    useEffect(() => {
+        setIsAuthenticated(isLoggedIn());
+    }, []);
 
     return(
         <StyledHeader>
@@ -84,11 +106,20 @@ function Header({onSearch, onReset}) {
                 <CiSearch className="search-icon"/>
                 </div>
                 <div className="login-container">
-                    <button className="login" onClick={() => setIsLoginOpen(true)}>
-                        <FiUser className="login-icon"/>
-                        Login
-                    </button>
-                    <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)}/>
+                    {isAuthenticated ? (
+                        <button className="logout" onClick={() => {
+                            logout();
+                            setIsAuthenticated(false);
+                        }}>
+                            Logout
+                        </button>
+                    ) : (
+                        <button className="login" onClick={() => setIsLoginOpen(true)}>
+                            <FiUser className="login-icon" />
+                            Login
+                        </button>
+                    )}
+                    <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} onLoginSuccess={() => setIsAuthenticated(true)}/>
                 </div>
         </StyledHeader>
     );

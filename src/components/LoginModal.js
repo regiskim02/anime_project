@@ -19,7 +19,7 @@ const Modal = styled.div`
     }
 
     input {
-    widht: 400px;
+    width: 400px;
     height: 42px;
     padding: 8px 12px;
     border-radius: 10px;
@@ -29,7 +29,6 @@ const Modal = styled.div`
     }
 
     .login-button{
-    heihgt: 60px;
     padding: 8px;
     font-size: 16px;
     color: white;
@@ -78,7 +77,7 @@ const Backdrop = styled.div`
     z-index: 1000;
 `;
 
-function LoginModal({isOpen, onClose}) {
+function LoginModal({isOpen, onClose, onLoginSuccess}) {
     const [mode, setMode] = useState("login");
 
     const [username, setUsername] = useState("");
@@ -91,20 +90,20 @@ function LoginModal({isOpen, onClose}) {
         setLoading(true);
 
         try {
-            if (mode === "login") {
-                const res = await login({username, password});
-                localStorage.setItem("token", res.data);
-                onClose();
-            } else {
-                await signup({username, password});
-                setMode("login");
-            }
+        if (mode === "login") {
+            await login({ username, password }); 
+            onLoginSuccess();                    
+            onClose();
+        } else {
+            await signup({ username, password });
+            setMode("login");
+        }
         } catch (err) {
             setError(err.response?.data || "Something went wrong");
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     if (!isOpen) return null;
 
