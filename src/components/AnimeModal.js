@@ -5,7 +5,8 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { IoCheckmark } from "react-icons/io5";
 import { GoClock } from "react-icons/go";
 
-function AnimeModal({ isOpen, onClose, anime }) {
+function AnimeModal({ isOpen, onClose, anime, isFavorite, onToggleFavorite }) {
+
     if (!isOpen || !anime) return null;
 
 function capitalize(str) {
@@ -27,8 +28,6 @@ const InfoItems = [
     }
 ].filter(item => item.value);
 
-console.log(anime)
-
 
     return (
         <div className="modal-overlay" onClick={onClose}>
@@ -44,7 +43,13 @@ console.log(anime)
                 />
 
                 <div className="modal-actions">
-                    <button><CiHeart className="icon"/>Add to Favorites</button>
+                    <button
+                        className={`fav-button ${isFavorite ? "active" : ""}`}
+                        onClick={onToggleFavorite}
+                    >
+                        <CiHeart className="icon" />
+                        {isFavorite ? "Favorited" : "Add to Favorites"}
+                    </button>
                     <button><MdOutlineRemoveRedEye className="icon"/> Watching</button>
                     <button><IoCheckmark className="icon"/> Completed</button>
                     <button><GoClock className="icon"/> Plan to Watch</button>

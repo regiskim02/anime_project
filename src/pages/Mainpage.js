@@ -16,6 +16,15 @@ function Mainpage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearching, setIsSearching] = useState(false);
 
+    const [favorites, setFavorites] = useState({});
+
+    function toggleFavorite(animeId) {
+        setFavorites(prev => ({
+            ...prev,
+            [animeId]: !prev[animeId],
+        }));
+    }
+
     async function resetPage() {
         setLoading(true);
         setIsSearching(false);
@@ -83,10 +92,13 @@ function Mainpage() {
             ) : (
             <div className="anime">
                 {animeList.map((anime) => (
-                    <AnimeCard 
-                    key={anime.mal_id} 
-                    anime={anime}
-                    onClick={() => handleAnimeClick(anime)} />
+                    <AnimeCard
+                        key={anime.mal_id}
+                        anime={anime}
+                        isFavorite={!!favorites[anime.mal_id]}
+                        onToggleFavorite={() => toggleFavorite(anime.mal_id)}
+                        onClick={() => handleAnimeClick(anime)}
+                    />
                 ))}
             </div>
             )}
@@ -96,7 +108,12 @@ function Mainpage() {
             isOpen={isModalOpen}
             anime={selectedAnime}
             onClose={closeModal}
+            isFavorite={!!favorites[selectedAnime?.mal_id]}
+            onToggleFavorite={() =>
+                selectedAnime && toggleFavorite(selectedAnime.mal_id)
+            }
         />
+
     </>
     )
 }

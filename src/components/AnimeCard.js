@@ -28,8 +28,10 @@ const AnimeScore = styled.div`
 const FavoriteButton = styled.button`
     width: 36px;
     height: 36px;
-    border-radius: 99px;
-    background-color: white;
+    border-radius: 999px;
+    background-color: ${({ $active }) => ($active ? "#e63946" : "white")};
+    color: ${({ $active }) => ($active ? "white" : "black")};
+
     position: absolute;
     opacity: 0.9;
     top: 6px;
@@ -40,39 +42,59 @@ const FavoriteButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: default;
+    cursor: pointer;
 
     transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
         transform 0.2s ease,
         box-shadow 0.2s ease,
         opacity 0.2s ease;
 
     &:hover {
-        transform: scale(1.1) rotate(8deg);
+        transform: scale(1.1);
         box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
         opacity: 1;
+    }
+
+    &:active {
+        transform: scale(0.95);
     }
 
 
 `
 
-function AnimeCard({ anime, onClick }) {
+function AnimeCard({ anime, onClick, isFavorite, onToggleFavorite }) {
+
+
     const infoItems = [
         anime.type,
         anime.episodes ? `${anime.episodes} eps` : null,
         anime.year,
     ].filter(Boolean);
+
     return (
         <div className="anime-card" onClick={onClick}>
-            <FavoriteButton onClick={(e) => e.stopPropagation()}>
+            <FavoriteButton
+                $active={isFavorite}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleFavorite();
+                }}
+            >
                 <CiHeart />
             </FavoriteButton>
+
+
             <img src={anime.images.jpg.large_image_url} alt={anime.title} />
+
             <div className="anime-info">
                 <AnimeScore>
                     <BiSolidStar /> {anime.score ?? "N/A"}
                 </AnimeScore>
+
                 <h3 className="anime-title">{anime.title}</h3>
+
                 <div className="anime-info-plus">
                     {infoItems.map((item, index) => (
                         <span key={index}>
@@ -85,5 +107,6 @@ function AnimeCard({ anime, onClick }) {
         </div>
     );
 }
+
 
 export default AnimeCard;

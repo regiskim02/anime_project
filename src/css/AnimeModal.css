@@ -137,3 +137,13 @@
 .info p {
     margin: 0;
 }
+
+.fav-button.active {
+    background-color: #e63946;
+    color: white;
+    border-color: #e63946;
+}
+
+.fav-button.active:hover {
+    background-color: #d62839;
+}
