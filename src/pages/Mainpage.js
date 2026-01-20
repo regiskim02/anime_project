@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { getPopularAnime } from "../services/jikanApi";
 import AnimeCard from "../components/AnimeCard";
 import AnimeModal from "../components/AnimeModal";
+import LoginModal from "../components/LoginModal";
+import { logout } from "../services/authService";
 
 
 function Mainpage() {
@@ -21,14 +23,25 @@ function Mainpage() {
     const [isCompleted, setIsCompleted] = useState({});
     const [isPlanToWatch, setIsPlanToWatch] = useState({});
 
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
+
     function toggleFavorite(animeId) {
-        setFavorites(prev => ({
-            ...prev,
-            [animeId]: !prev[animeId],
-        }));
+        if(!isAuthenticated) {
+            setIsLoginOpen(true);
+            return;
+        }
+            setFavorites(prev => ({
+                ...prev,
+                [animeId]: !prev[animeId],
+            }));
     }
 
     function toggleButton(animeId) {
+        if(!isAuthenticated) {
+            setIsLoginOpen(true);
+            return;
+        }
         setIsPressed(prev => ({
             ...prev,
             [animeId]: !prev[animeId],
@@ -36,6 +49,10 @@ function Mainpage() {
     }
 
     function toggleCompleted(animeId) {
+        if(!isAuthenticated) {
+            setIsLoginOpen(true);
+            return;
+        }
         setIsCompleted(prev => ({
             ...prev,
             [animeId]: !prev[animeId],
@@ -43,6 +60,10 @@ function Mainpage() {
     }
 
     function toggleIsPlanToWatch(animeId) {
+        if(!isAuthenticated) {
+            setIsLoginOpen(true);
+            return;
+        }
         setIsPlanToWatch(prev => ({
             ...prev,
             [animeId]: !prev[animeId],
@@ -107,7 +128,14 @@ function Mainpage() {
 
     return(
     <>
-        <Header onSearch={handleSearch} onReset={resetPage}/>
+        <Header onSearch={handleSearch}
+        onReset={resetPage}
+        isAuthenticated= {isAuthenticated}
+        onLoginClick={() => setIsLoginOpen(true)}
+        onLogout={() => {
+            logout();
+            setIsAuthenticated(false);
+        }}/>
         <main>
             <p className="title">{isSearching ? `Searched: ${searchQuery}` : "Most Popular Anime"}</p>
 
@@ -149,6 +177,16 @@ function Mainpage() {
                 selectedAnime && toggleIsPlanToWatch(selectedAnime.mal_id)
             }
         />
+
+        <LoginModal
+            isOpen={isLoginOpen}
+            onClose={() => setIsLoginOpen(false)}
+            onLoginSuccess={() => {
+                setIsAuthenticated(true);
+                setIsLoginOpen(false);
+            }}
+        />
+
 
     </>
     )

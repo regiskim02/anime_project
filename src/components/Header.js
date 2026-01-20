@@ -85,18 +85,13 @@ const StyledHeader = styled.header`
 
 
 
-function Header({onSearch, onReset}) {
-    const [isLoginOpen, setIsLoginOpen] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+function Header({onSearch, onReset, isAuthenticated, onLoginClick, onLogout}) {
 
     const handleKeyDown = async (e) => {
     if (e.key === "Enter") {
         onSearch(e.target.value);
     }
 };
-    useEffect(() => {
-        setIsAuthenticated(isLoggedIn());
-    }, []);
 
     return(
         <StyledHeader>
@@ -107,19 +102,16 @@ function Header({onSearch, onReset}) {
                 </div>
                 <div className="login-container">
                     {isAuthenticated ? (
-                        <button className="logout" onClick={() => {
-                            logout();
-                            setIsAuthenticated(false);
-                        }}>
+                        <button className="logout" onClick={onLogout}>
                             Logout
                         </button>
                     ) : (
-                        <button className="login" onClick={() => setIsLoginOpen(true)}>
+                        <button className="login" onClick={onLoginClick}>
                             <FiUser className="login-icon" />
                             Login
                         </button>
                     )}
-                    <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} onLoginSuccess={() => setIsAuthenticated(true)}/>
+
                 </div>
         </StyledHeader>
     );
