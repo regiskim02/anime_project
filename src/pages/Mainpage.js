@@ -17,9 +17,33 @@ function Mainpage() {
     const [isSearching, setIsSearching] = useState(false);
 
     const [favorites, setFavorites] = useState({});
+    const [isPressed, setIsPressed] = useState({});
+    const [isCompleted, setIsCompleted] = useState({});
+    const [isPlanToWatch, setIsPlanToWatch] = useState({});
 
     function toggleFavorite(animeId) {
         setFavorites(prev => ({
+            ...prev,
+            [animeId]: !prev[animeId],
+        }));
+    }
+
+    function toggleButton(animeId) {
+        setIsPressed(prev => ({
+            ...prev,
+            [animeId]: !prev[animeId],
+        }));
+    }
+
+    function toggleCompleted(animeId) {
+        setIsCompleted(prev => ({
+            ...prev,
+            [animeId]: !prev[animeId],
+        }));
+    }
+
+    function toggleIsPlanToWatch(animeId) {
+        setIsPlanToWatch(prev => ({
             ...prev,
             [animeId]: !prev[animeId],
         }));
@@ -108,9 +132,21 @@ function Mainpage() {
             isOpen={isModalOpen}
             anime={selectedAnime}
             onClose={closeModal}
+            isButtonPressed={!!isPressed[selectedAnime?.mal_id]}
+            onToggleButton={() => 
+                selectedAnime && toggleButton(selectedAnime.mal_id)
+            }
             isFavorite={!!favorites[selectedAnime?.mal_id]}
             onToggleFavorite={() =>
                 selectedAnime && toggleFavorite(selectedAnime.mal_id)
+            }
+            isCompleted={!!isCompleted[selectedAnime?.mal_id]}
+            onToggleCompleted={() => 
+                selectedAnime && toggleCompleted(selectedAnime.mal_id)
+            }
+            isPlanToWatch={!!isPlanToWatch[selectedAnime?.mal_id]}
+            onTogglePlanToWatch={() => 
+                selectedAnime && toggleIsPlanToWatch(selectedAnime.mal_id)
             }
         />
 

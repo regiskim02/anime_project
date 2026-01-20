@@ -5,7 +5,8 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { IoCheckmark } from "react-icons/io5";
 import { GoClock } from "react-icons/go";
 
-function AnimeModal({ isOpen, onClose, anime, isFavorite, onToggleFavorite }) {
+
+function AnimeModal({ isOpen, onClose, anime, isFavorite, onToggleFavorite, isButtonPressed, onToggleButton, isCompleted, onToggleCompleted, isPlanToWatch, onTogglePlanToWatch}) {
 
     if (!isOpen || !anime) return null;
 
@@ -50,9 +51,9 @@ const InfoItems = [
                         <CiHeart className="icon" />
                         {isFavorite ? "Favorited" : "Add to Favorites"}
                     </button>
-                    <button><MdOutlineRemoveRedEye className="icon"/> Watching</button>
-                    <button><IoCheckmark className="icon"/> Completed</button>
-                    <button><GoClock className="icon"/> Plan to Watch</button>
+                    <button className={`state-button ${isButtonPressed ? "active" : ""}`} onClick={onToggleButton}><MdOutlineRemoveRedEye className="icon"/> Watching</button>
+                    <button className={`state-complete ${isCompleted ? "active" : ""}`} onClick={onToggleCompleted}><IoCheckmark className="icon"/> Completed</button>
+                    <button className={`state-plan ${isPlanToWatch ? "active" : ""}`} onClick={onTogglePlanToWatch}><GoClock className="icon"/> Plan to Watch</button>
                 </div>
             </div>
 

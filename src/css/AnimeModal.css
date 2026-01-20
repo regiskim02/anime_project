@@ -147,3 +147,25 @@
 .fav-button.active:hover {
     background-color: #d62839;
 }
+
+.state-button.active {
+    background-color: #88b5f3;
+}
+
+.state-button.active:hover {
+    background-color: #88b5f3;
+}
+
+.state-complete.active {
+    background-color: #88b5f3;
+}
+.state-complete.active:hover {
+    background-color: #88b5f3;
+}
+
+.state-plan.active {
+    background-color: #88b5f3;
+}
+.state-plan.active:hover {
+    background-color: #88b5f3;
+}
