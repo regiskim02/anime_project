@@ -37,6 +37,7 @@ const Modal = styled.div`
     box-sizing: border-box;
     border-radius: 10px;
     border: none;
+    width: 400px;
     }
 
     .button-link {
@@ -85,7 +86,8 @@ function LoginModal({isOpen, onClose, onLoginSuccess}) {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setError("");
         setLoading(true);
 
@@ -119,6 +121,7 @@ function LoginModal({isOpen, onClose, onLoginSuccess}) {
                 {error && <p style={{ color: "red" }}>{error}</p>}
                 {mode === "login" ? (
                     <>
+                    <form onSubmit={handleSubmit}>
                         <h3>Username</h3>
                         <input 
                             placeholder="Enter username" 
@@ -135,15 +138,17 @@ function LoginModal({isOpen, onClose, onLoginSuccess}) {
 
                         <button 
                             className="login-button"
-                            onClick={handleSubmit}
+                            type="submit"
                             disabled={loading}
                         >
                             {loading ? "Loading..." : mode === "login" ? "Login" : "Register"}
                         </button>
+                    </form>
                         <button className="button-link" onClick={() => setMode("register")}>Don't have an account? Register</button>
                     </>
                 ) : (
                     <>
+                    <form onSubmit={handleSubmit}>
                         <h3>Username</h3>
                         <input 
                             placeholder="Enter username"
@@ -160,12 +165,13 @@ function LoginModal({isOpen, onClose, onLoginSuccess}) {
 
                         <button 
                             className="login-button"
-                            onClick={handleSubmit}
+                            type="submit"
                             disabled={loading}
                         >
                             {loading ? "Loading..." : mode === "login" ? "Login" : "Register"}
                         </button>
                         <button className="button-link" onClick={() => setMode("login")}>Already have an account? Login</button>
+                        </form>
                     </>
                 )}
             </Modal>

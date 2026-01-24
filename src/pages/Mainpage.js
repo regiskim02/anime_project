@@ -6,6 +6,8 @@ import AnimeCard from "../components/AnimeCard";
 import AnimeModal from "../components/AnimeModal";
 import LoginModal from "../components/LoginModal";
 import { logout } from "../services/authService";
+import { updateAnimeStatus, getUserAnimeStatus } from "../services/animeApi";
+
 
 
 function Mainpage() {
@@ -26,47 +28,84 @@ function Mainpage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoginOpen, setIsLoginOpen] = useState(false);
 
-    function toggleFavorite(animeId) {
+    async function toggleFavorite(anime) {
         if(!isAuthenticated) {
             setIsLoginOpen(true);
             return;
         }
+
+        const newValue = favorites[anime.mal_id] ? "N" : "Y";
+
+        await updateAnimeStatus({
+            malId: anime.mal_id,
+            type: "FAVORITE",
+            value: newValue
+        })
+
             setFavorites(prev => ({
                 ...prev,
-                [animeId]: !prev[animeId],
+                [anime.mal_id]: !prev[anime.mal_id],
             }));
     }
 
-    function toggleButton(animeId) {
+    async function toggleButton(anime) {
         if(!isAuthenticated) {
             setIsLoginOpen(true);
             return;
         }
+
+        const newValue = isPressed[anime.mal_id] ? "N" : "Y";
+
+        await updateAnimeStatus({
+            malId: anime.mal_id,
+            type: "WATCH",
+            value: newValue
+        })
+
         setIsPressed(prev => ({
             ...prev,
-            [animeId]: !prev[animeId],
+            [anime.mal_id]: !prev[anime.mal_id],
         }));
     }
 
-    function toggleCompleted(animeId) {
+    async function toggleCompleted(anime) {
         if(!isAuthenticated) {
             setIsLoginOpen(true);
             return;
         }
+
+        const newValue = isCompleted[anime.mal_id] ? "N" : "Y";
+
+        await updateAnimeStatus({
+            malId: anime.mal_id,
+            type: "COMPLETED",
+            value: newValue
+        });
+
+
         setIsCompleted(prev => ({
             ...prev,
-            [animeId]: !prev[animeId],
+            [anime.mal_id]: !prev[anime.mal_id],
         }));
     }
 
-    function toggleIsPlanToWatch(animeId) {
+    async function toggleIsPlanToWatch(anime) {
         if(!isAuthenticated) {
             setIsLoginOpen(true);
             return;
         }
+
+        const newValue = isPlanToWatch[anime.mal_id] ? "N" : "Y";
+
+        await updateAnimeStatus({
+            malId: anime.mal_id,
+            type: "PLAN_TO_WATCH",
+            value: newValue
+        });
+
         setIsPlanToWatch(prev => ({
             ...prev,
-            [animeId]: !prev[animeId],
+            [anime.mal_id]: !prev[anime.mal_id],
         }));
     }
 
@@ -126,6 +165,36 @@ function Mainpage() {
         SetSelecteAnime(null);
     };
 
+    function resetUserState() {
+        setFavorites({});
+        setIsPressed({});
+        setIsCompleted({});
+        setIsPlanToWatch({});
+    }
+
+    async function loadUserStatus() {
+    const data = await getUserAnimeStatus();
+
+    const fav = {};
+    const watch = {};
+    const completed = {};
+    const plan = {};
+
+    data.forEach(item => {
+        if (item.favyn === "Y") fav[item.malId] = true;
+        if (item.watchyn === "Y") watch[item.malId] = true;
+        if (item.completedyn === "Y") completed[item.malId] = true;
+        if (item.planToWatchyn === "Y") plan[item.malId] = true;
+    });
+
+    setFavorites(fav);
+    setIsPressed(watch);
+    setIsCompleted(completed);
+    setIsPlanToWatch(plan);
+    console.log("USER STATUS:", data);
+}
+
+
     return(
     <>
         <Header onSearch={handleSearch}
@@ -135,6 +204,7 @@ function Mainpage() {
         onLogout={() => {
             logout();
             setIsAuthenticated(false);
+            resetUserState();
         }}/>
         <main>
             <p className="title">{isSearching ? `Searched: ${searchQuery}` : "Most Popular Anime"}</p>
@@ -148,7 +218,7 @@ function Mainpage() {
                         key={anime.mal_id}
                         anime={anime}
                         isFavorite={!!favorites[anime.mal_id]}
-                        onToggleFavorite={() => toggleFavorite(anime.mal_id)}
+                        onToggleFavorite={() => toggleFavorite(anime)}
                         onClick={() => handleAnimeClick(anime)}
                     />
                 ))}
@@ -162,27 +232,28 @@ function Mainpage() {
             onClose={closeModal}
             isButtonPressed={!!isPressed[selectedAnime?.mal_id]}
             onToggleButton={() => 
-                selectedAnime && toggleButton(selectedAnime.mal_id)
+                selectedAnime && toggleButton(selectedAnime)
             }
             isFavorite={!!favorites[selectedAnime?.mal_id]}
             onToggleFavorite={() =>
-                selectedAnime && toggleFavorite(selectedAnime.mal_id)
+                selectedAnime && toggleFavorite(selectedAnime)
             }
             isCompleted={!!isCompleted[selectedAnime?.mal_id]}
             onToggleCompleted={() => 
-                selectedAnime && toggleCompleted(selectedAnime.mal_id)
+                selectedAnime && toggleCompleted(selectedAnime)
             }
             isPlanToWatch={!!isPlanToWatch[selectedAnime?.mal_id]}
             onTogglePlanToWatch={() => 
-                selectedAnime && toggleIsPlanToWatch(selectedAnime.mal_id)
+                selectedAnime && toggleIsPlanToWatch(selectedAnime)
             }
         />
 
         <LoginModal
             isOpen={isLoginOpen}
             onClose={() => setIsLoginOpen(false)}
-            onLoginSuccess={() => {
+            onLoginSuccess={async() => {
                 setIsAuthenticated(true);
+                await loadUserStatus();
                 setIsLoginOpen(false);
             }}
         />

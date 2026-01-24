@@ -3,6 +3,8 @@ import api from "./axios";
 export const login = async (data) => {
     const response = await api.post("/auth/login", data);
 
+    console.log("LOGIN RESPONSE:", response.data);
+
     const token = response.data.token;
     localStorage.setItem("token", token);
 
