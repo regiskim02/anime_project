@@ -28,6 +28,8 @@ function Mainpage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoginOpen, setIsLoginOpen] = useState(false);
 
+    const [filter, setFilter] = useState("ALL");
+
     async function toggleFavorite(anime) {
         if(!isAuthenticated) {
             setIsLoginOpen(true);
@@ -194,34 +196,71 @@ function Mainpage() {
     console.log("USER STATUS:", data);
 }
 
+    const filteredAnimelist = animeList.filter(anime => {
+        const id = anime.mal_id;
+
+
+        if (filter === "FAVORITE") return !!favorites[id];
+        if (filter === "WATCHING") return !!isPressed[id];
+        if (filter === "COMPLETED") return !!isCompleted[id];
+        if (filter === "PLAN") return !!isPlanToWatch[id];
+
+        return true;
+    })
+
+    const filterTitles = {
+    ALL: "Most Popular Anime",
+    FAVORITE: " avorite Anime",
+    WATCHING: "Watching",
+    COMPLETED: "Completed",
+    PLAN: "Plan to Watch",
+};
 
     return(
     <>
         <Header onSearch={handleSearch}
-        onReset={resetPage}
+        onReset={() => {
+            resetPage();
+            setFilter("ALL");
+        }}
         isAuthenticated= {isAuthenticated}
         onLoginClick={() => setIsLoginOpen(true)}
         onLogout={() => {
             logout();
             setIsAuthenticated(false);
             resetUserState();
-        }}/>
+            setFilter("ALL");
+        }}
+        onFilter={(type) => {setFilter(type); setIsSearching(false);}}
+        />
         <main>
-            <p className="title">{isSearching ? `Searched: ${searchQuery}` : "Most Popular Anime"}</p>
+            <p className="title">
+                {isSearching
+                    ? `Searched: ${searchQuery}`
+                    : filterTitles[filter]}
+            </p>
 
             {loading ? (
             <p>Loading...</p>
             ) : (
             <div className="anime">
-                {animeList.map((anime) => (
-                    <AnimeCard
-                        key={anime.mal_id}
-                        anime={anime}
-                        isFavorite={!!favorites[anime.mal_id]}
-                        onToggleFavorite={() => toggleFavorite(anime)}
-                        onClick={() => handleAnimeClick(anime)}
-                    />
-                ))}
+                {filteredAnimelist.length === 0 ? (
+                    <p style={{ padding: "20px", color: "#6b7280" }}>
+                        There is no anime saved here.
+                    </p>
+                ) : (
+                    <div className="anime">
+                        {filteredAnimelist.map((anime) => (
+                            <AnimeCard
+                                key={anime.mal_id}
+                                anime={anime}
+                                isFavorite={!!favorites[anime.mal_id]}
+                                onToggleFavorite={() => toggleFavorite(anime)}
+                                onClick={() => handleAnimeClick(anime)}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
             )}
         </main>

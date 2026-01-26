@@ -1,9 +1,12 @@
 import styled from "styled-components";
 import { CiSearch } from "react-icons/ci";
 import { FiUser } from "react-icons/fi";
-import { useEffect, useState } from "react";
-import LoginModal from "./LoginModal";
-import { isLoggedIn, logout } from "../services/authService";
+import { useEffect,useRef, useState } from "react";
+import { CiHeart } from "react-icons/ci";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { IoCheckmark } from "react-icons/io5";
+import { GoClock } from "react-icons/go";
+
 
 const StyledHeader = styled.header`
     background-color: white;
@@ -81,11 +84,73 @@ const StyledHeader = styled.header`
     font-size: 13px;
     }
 
+    .profile-wraper {
+    display: flex;
+    align-items: cneter;
+    gap: 12px;
+    position: relative;
+    }
+
+    .profile-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    }
+
+    .profile-dropdown {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: 180px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    overflow: hidden;
+    z-index: 100;
+    }
+
+    .profile-dropdown .item {
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    }
+
+    .profile-dropdown .item:hover {
+    background-color: #f3f4f6;
+    }
+
 `
 
 
 
-function Header({onSearch, onReset, isAuthenticated, onLoginClick, onLogout}) {
+function Header({onSearch, onReset, isAuthenticated, onLoginClick, onLogout, onFilter}) {
+
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const profileRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(e) {
+            const el = profileRef.current;
+            if (!el) return;
+
+            if (!el.contains(e.target)) {
+                setIsProfileOpen(false);
+            }
+            }
+            if (!isAuthenticated) {
+                setIsProfileOpen(false);
+            }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [isAuthenticated]);
 
     const handleKeyDown = async (e) => {
     if (e.key === "Enter") {
@@ -102,9 +167,26 @@ function Header({onSearch, onReset, isAuthenticated, onLoginClick, onLogout}) {
                 </div>
                 <div className="login-container">
                     {isAuthenticated ? (
-                        <button className="logout" onClick={onLogout}>
-                            Logout
-                        </button>
+                        <div className="profile-wraper" ref={profileRef}>
+                            <button className="profile-btn" onClick={() => {
+                                setIsProfileOpen(prev => !prev)
+                            }}><FiUser/></button>
+
+                            {isProfileOpen && (
+                                <div className="profile-dropdown">
+                                    <div className="item" onClick={() => {onFilter("FAVORITE"); setIsProfileOpen(false);}}><CiHeart/> Favorites</div>
+                                    <div className="item" onClick={() => {onFilter("WATCHING"); setIsProfileOpen(false)}}><MdOutlineRemoveRedEye/> Watching</div>
+                                    <div className="item" onClick={() => {onFilter("COMPLETED"); setIsProfileOpen(false)}}><IoCheckmark/> Completed</div>
+                                    <div className="item" onClick={() => {onFilter("PLAN"); setIsProfileOpen(false)}}><GoClock/> Plan to Watch</div>
+                                </div>
+                            )}
+                            <button className="logout" onClick={() => {
+                                onLogout();
+                                setIsProfileOpen(false);
+                            }}>
+                                Logout
+                            </button>
+                        </div>
                     ) : (
                         <button className="login" onClick={onLoginClick}>
                             <FiUser className="login-icon" />
